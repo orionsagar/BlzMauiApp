@@ -1,0 +1,49 @@
+﻿    <!-- App Header -->
+<!-- RTL mode switching -->
+<div class="rtl-mode-switching">
+    <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+        <div class="rtl-mode-text text-center">
+            <i class="bi bi-text-right"></i>
+            <p class="mb-0">Switching to RTL mode</p>
+        </div>
+        <div class="ltr-mode-text text-center">
+            <i class="bi bi-text-left"></i>
+            <p class="mb-0">Switching to default mode</p>
+        </div>
+    </div>
+</div>
+
+<!-- Header Area -->
+<div class="header-area" id="headerArea">
+    <div class="container">
+
+        <!-- # Header Five Layout -->
+        <!-- Header Content -->
+        <div class="header-content header-style-four position-relative d-flex align-items-center justify-content-between">
+            <!-- Logo Wrapper -->
+            <div class="logo-wrapper">
+                <a href="page-home.html">
+                    @*<img src="img/core-img/logo.png" alt="">*@
+                    <b>@Title</b>
+                </a>
+            </div>
+
+            <!-- Navbar Toggler -->
+            <div class="navbar--toggler" id="affanNavbarToggler" data-bs-toggle="offcanvas" data-bs-target="#affanOffcanvas"
+                 aria-controls="affanOffcanvas">
+                <span class="d-block"></span>
+                <span class="d-block"></span>
+                <span class="d-block"></span>
+            </div>
+        </div>
+        <!-- # Header Five Layout End -->
+
+    </div>
+</div>
+<!-- * App Header -->
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string Title { get; set; }
+}

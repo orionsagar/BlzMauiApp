@@ -1,0 +1,486 @@
+﻿@page "/salesadd"
+@using BlzMauiApp.Services
+@using BlzMauiApp.Models
+@using BlzMauiApp.Services.Data;
+@using BlzMauiApp.Services.DataService
+@using System.Collections.ObjectModel
+
+@inject IAlertService AlertService
+@inject CDialogService dialogService
+
+@*@inject IJSRuntime js*@
+
+<InnerHeader Title="Invoice List" BackUrl="/saleslist" />
+<style type="text/css">
+    .form-label1 {
+        margin-bottom: 0.2rem !important;
+    }
+</style>
+
+<div class="page-content-wrapper py-3">
+    <!-- Element Heading -->
+    <div class="container">
+
+            <div class="form-group">
+                @*<label class="form-label" for="exampleInputText">Input text</label>
+                <input class="form-control" id="exampleInputText" type="text" placeholder="Designing World">*@
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Branch:</RadzenText>
+                    <RadzenDropDown AllowClear="true" TValue="string" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Class="w-100"
+                                    Placeholder="Select..." Data=@customers TextProperty="CompanyName" ValueProperty="CustomerID" Change=@(args => OnChange(args, "DropDown with placeholder")) />
+                </RadzenCard>
+            </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Invoice No:</RadzenText>
+                <RadzenTextBox @bind-Value=@txtInvoiceNo
+                               Change=@(args => OnChange(args, "TextBox"))
+                               Class="w-100"
+                               Disabled="true" />
+                @*<input type="text" class="form-control" @bind="@MyOption" />*@
+            </RadzenCard>
+        </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Representative(MR):</RadzenText>
+                <RadzenDropDown AllowClear="true"
+                                TValue="string"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowFiltering="true" Class="w-100"
+                                Placeholder="Select..."
+                                Data=@MRList
+                                TextProperty="Text"
+                                ValueProperty="Value"
+                                @bind-Value="salesInvoice.RepresentativeId"
+                                Change=@(args => OnChangeMR(args, "DropDown with placeholder")) />
+            </RadzenCard>
+        </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Dist. Representative(SR):</RadzenText>
+                <RadzenDropDown AllowClear="true"
+                                TValue="string"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowFiltering="true" Class="w-100"
+                                Placeholder="Select..."
+                                Data=@SRList TextProperty="Text"
+                                ValueProperty="Value"
+                                @bind-Value="salesInvoice.SRID"
+                                Change=@(args => OnChangeSR(args, "DropDown with placeholder")) />
+            </RadzenCard>
+        </div>
+
+            <div class="form-group">
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer:</RadzenText>
+                    <RadzenDropDown AllowClear="true" TValue="string" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Class="w-100"
+                                    Placeholder="Select..." Data=@customers TextProperty="CompanyName" ValueProperty="CustomerID" Change=@(args => OnChange(args, "DropDown with placeholder")) />
+                </RadzenCard>
+            </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Customer Phone:</RadzenText>
+                <RadzenTextBox Change=@(args => OnChange(args, "TextBox")) Class="w-100" @bind-Value="salesInvoice.DPhone1" />
+            </RadzenCard>
+        </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Delivery Address:</RadzenText>
+                <RadzenTextArea Placeholder="Enter here..."
+                                Change=@(args => OnChange(args, "TextArea with placeholder")) Class="w-100" @bind-Value="salesInvoice.DAddress" />
+            </RadzenCard>
+        </div>
+
+        <div class="form-group">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Sale Date:</RadzenText>
+                <RadzenDatePicker @bind-Value="salesInvoice.Saledate" DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "dd-MM-yyyy")) Class="w-100" />
+            </RadzenCard>
+        </div>
+
+        <div class="form-group">
+            @*<label class="form-label" for="exampleInputtelephone">Sale Type:</label>
+            <input class="form-control" id="exampleInputtelephone" type="tel" placeholder="+880 123 456 7890">*@
+            <div class="card">
+                <div class="card-body">
+                    <label class="form-label" for="exampleInputtelephone">Sale Type:</label>
+                    <select name="SaleType" class="form-control" @bind="salesInvoice.PayType">
+                        <option>Cash</option>
+                        <option>Credit</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            @*<label class="form-label" for="exampleInputnumber">Remarks:</label>
+            <input class="form-control form-control-lg" id="exampleInputText2" type="text"
+            placeholder="Designing World">*@
+
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Remarks:</RadzenText>
+                    <RadzenTextArea Placeholder="Enter here..." Change=@(args => OnChange(args, "TextArea with placeholder")) Class="w-100" />
+                </RadzenCard>
+            </div>
+        }
+
+
+        <!-- Modal -->
+        @if (showModal)
+        {
+            @*<div class="@IsShowPopup" id="staticBackdrop" data-bs-backdrop="static" style="@IsStyleShowPopup" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">*@
+            <div class="modal fade show" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" style="display: block;" aria-modal="true" role="dialog">
+
+                <div class="modal-dialog modal-fullscreen-md-down">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="staticBackdropLabel">Product List</h6>
+                            <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal" @onclick="@ModalCancel" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-0">Please Select Item to add your list.</p>
+                            @if (selectedProduct?.Any() == true)
+                            {
+                                <div style="margin-left: 16px">
+                                    Selected Employee: @selectedProduct[0].ProductCode @selectedProduct[0].ProductName
+                                </div>
+                            }
+                            <RadzenDataGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="21"
+                                        AllowSorting="true" Data="@products" TItem="Products" ColumnWidth="200px"
+                                        SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedProduct>
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="Products" Property="Photo" Title="Name" Sortable="false" Filterable="false">
+                                        <Template Context="data">
+                                            @*<RadzenImage Path="@data.Photo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 8px;" />*@
+                                            @data.ProductName <br />
+                                            Code: @data.ProductCode <br />
+                                            Cur. Stock: @data.CurrentStock
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    <RadzenDataGridColumn TItem="Products" Property="Price" Title="Price" Sortable="false" Filterable="false">
+                                        <Template Context="data">
+                                            Pur. Price: @data.PurchasePrice <br />
+                                            Trade Price: @data.SalePrice <br />
+                                            MRP: @data.MrpPrice
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                    @*<RadzenDataGridColumn TItem="Products" Property="ProductCode" Title="Product Code" />
+                                <RadzenDataGridColumn TItem="Products" Property="PurchasePrice" Title="Pur. Price" />
+                                <RadzenDataGridColumn TItem="Products" Property="SalePrice" Title="Sale Price" />
+                                <RadzenDataGridColumn TItem="Products" Property="MrpPrice" Title="MRP" />
+                                <RadzenDataGridColumn TItem="Products" Property="CurrentStock" Title="Stock" />*@
+                                </Columns>
+                            </RadzenDataGrid>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal" @onclick=@ModalCancel>Close</button>
+                            @*<button class="btn btn-sm btn-success" type="button">I Understood</button>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+            <button @onclick="AddValue" class="btn btn-primary">Add User</button>
+
+            @for (int i = 0; i < productInfo.Count; i++)
+            {
+                int index = i;
+                <div class="col-md-2">
+                <input type="text" @onchange="(e) => UpdateValue(index, e.Value.ToString())" value="@productInfo[i].ProductName" class="form-control" />
+
+                <button @onclick="() => UpdateProduct(index,productInfo[i])" class="btn btn-outline-primary">Update</button>
+                <button @onclick="() => RemoveProduct(index)" class="btn btn-outline-danger">Remove</button>
+                </div>
+            }
+            
+            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center" type="button">
+                Save
+                <i class="bi bi-arrow-right fz-16 ms-1"></i>
+            </button>
+        @*</form>*@
+
+
+        @* <h3 class="text-warning bg-light p-2">@FormSubmitMessage</h3>*@
+
+        @*<div class="card">
+        <div class="card-body">
+
+        </div>
+        </div>*@
+    </div>
+</div>
+
+@code {
+    string value;
+    IEnumerable<SelectListItem> customers;
+
+    IEnumerable<Products> products;
+    IList<Products> selectedProduct;
+    string IsShow = "display:none;";
+    string IsStyleShowPopup = "";
+
+    int orderID = 10248;
+
+    #region IEumList
+    public IEnumerable<SelectListItem> BranchList { get; set; }
+    public List<SelectListItem> BranchList1 { get; set; }
+    public IEnumerable<SelectListItem> MRList { get; set; }
+    public IEnumerable<SelectListItem> SRList { get; set; }
+    #endregion
+
+    #region API
+    private readonly APIDataService _apiServices = new APIDataService();
+    private readonly LoginDatabase loginDatabase = new LoginDatabase();
+    #endregion
+    //EventConsole console;
+
+
+    ///
+    private List<string> values = new List<string>();
+
+    private List<ProductInfo> productInfo = new List<ProductInfo>();
+
+
+
+
+    private void AddValue() => values.Add("");
+    private void UpdateValue(int i, string value) => values[i] = value;
+    private void RemoveValue(int i) => values.RemoveAt(i);
+
+    public string FormSubmitMessage { get; set; } = "Form Data Not Submitted";
+
+
+
+
+
+    public string MyOption { get; set; }
+
+    private void Option(ChangeEventArgs e)
+    {
+        MyOption = e.Value as string;
+    }
+
+
+
+
+
+
+
+    /// <summary>
+    /// Dynamic Product Generate
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="value"></param>
+    ///
+    private void RemoveProduct(int i) => productInfo.RemoveAt(i);
+
+    private void UpdateQty(int i, string value)
+    {
+        productInfo[i].Qty = Convert.ToInt32(value);
+        var amt = (Convert.ToInt32(value) * Convert.ToDecimal(selectedProduct[0].MrpPrice));
+        productInfo[i].Amount = amt;
+    }
+
+    private void UpdateBenQty(int i, string value)
+    {
+        productInfo[i].BensQty = Convert.ToInt32(value);
+        var amt = (Convert.ToInt32(value) * Convert.ToDecimal(selectedProduct[0].MrpPrice));
+        productInfo[i].Amount = amt;
+    }
+
+    public void Create()
+    {
+        FormSubmitMessage = "Form Data Submitted";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+        var userFeeds = await loginDatabase.GetItemsAsync();
+
+        if (userFeeds.Count > 0)
+        {
+            foreach (var uf in userFeeds)
+            {
+                BranchID = uf.bid;
+                AreaID = string.IsNullOrEmpty(uf.aid) == false ? uf.aid : "0";
+                RepresentativeID = uf.rid;
+                CompID = uf.compID;
+            }
+        }
+
+        GetBranch();
+
+        // customers = dbContext.Customers.ToList();
+
+        products = await _apiServices.GetAllProduct();
+        selectedProduct = products.Take(0).ToList();
+
+
+
+    }
+
+
+    public async void GetBranch()
+    {
+        if (BranchID != null)
+        {
+            var allBranch = await _apiServices.GetBranchs(BranchID);
+            if (allBranch != null)
+            {
+                //BranchList.Append(new SelectListItem
+                //    {
+                //        Value = "0",
+                //        Text = "Select Branch"
+                //    });
+
+                BranchList = allBranch.ToList();
+                BranchList1 = allBranch.ToList();
+                //foreach (var item in allBranch)
+                //{
+                //    BranchList.Add(new SelectListItem
+                //        {
+                //            Value = item.Value,
+                //            Text = item.Text
+                //        });
+                //}
+
+                GetCustomerByMr();
+            }
+        }
+        else
+        {
+            txtInvoiceNo = "";
+        }
+
+
+        //BranchList.Add(new SelectListItem
+        //{
+        //    Value = "1",
+        //    Text = "Chittagong"
+        //});
+        //BranchList.Add(new SelectListItem
+        //{
+        //    Value = "2",
+        //    Text = "Dhaka"
+        //});
+
+    }
+
+    void OnChange(string value, string name)
+    {
+        //console.Log($"{name} value changed to {value}");
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        //console.Log($"{name} value changed to {str}");
+    }
+
+    void OnChangeCustomer(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+
+    }
+
+    void OnChange(DateTime? value, string name, string format)
+    {
+        //console.Log($"{name} value changed to {value?.ToString(format)}");
+    }
+
+
+    // For Modal Show and Hide Start
+    bool showModal = false;
+
+    void ModalShow()
+    {
+        showModal = true;
+    }
+    void ModalCancel()
+    {
+        showModal = false;
+    }
+
+    void ModalOk()
+    {
+        Console.WriteLine("Modal ok");
+        showModal = false;
+    }
+    //End
+
+
+    //IJSObjectReference JsObjectRef { get; set; }
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        //JsObjectRef = await js.InvokeAsync<IJSObjectReference>("import", "/js/ForModal.js");
+        try
+        {
+            if (selectedProduct?.Any() == true)
+            {
+                var hasDup = productInfo.Any(x => x.ProductID == selectedProduct[0].ProductID);
+                if (hasDup != true)
+                {
+                    var amt = (1 * Convert.ToDecimal(selectedProduct[0].MrpPrice));
+                    productInfo.Add(
+                    new ProductInfo
+                        {
+                            ProductID = Convert.ToInt32(selectedProduct[0].ProductID),
+                            ProductCode = selectedProduct[0].ProductCode.ToString(),
+                            ProductName = selectedProduct[0].ProductName.ToString(),
+                            ProductType = selectedProduct[0].ProductType,
+                            ProductPrice = Convert.ToDecimal(selectedProduct[0].MrpPrice),
+                            Qty = 1,
+                            BensQty = 0,
+                            TotalQty = 1,
+                            Barcode = selectedProduct[0].ProductCode.ToString(),
+                            UnitID = Convert.ToInt32(selectedProduct[0].UnitID),
+                            Unit = selectedProduct[0].Unit.ToString(),
+                            Amount = Convert.ToDecimal(amt),
+                            CurrentStock = selectedProduct[0].CurrentStock
+                        });
+            }
+            
+            //IsShowPopup = "modal fade";
+            //IsStyleShowPopup = "style='display: none;'";
+            //call the js function to close the modal
+            //await JsObjectRef.InvokeVoidAsync("CloseModal", "#staticBackdrop");
+        }
+    }
+
+    //public Void Dispose()
+    //{
+    //    dialogService.OnOpen -= Open;
+    //    dialogService.OnClose -= Close;
+    //}
+
+
+    async Task ShowInlineDialog()
+    {
+        var result = await dialogService.OpenAsync("Simple Dialog", ds =>
+    @<div>
+        <p class="mb-4">Confirm Order ID <b>@orderID</b>?</p>
+        <div class="row">
+            <div class="col">
+                <RadzenButton Text="Ok" Click="() => ds.Close(true)" Class="me-1" Style="width: 80px;" />
+                <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" Class="me-1" />
+                <RadzenButton Text="Refresh" Click="(() => { orderID = 10249; ds.Refresh(); })" ButtonStyle="ButtonStyle.Light" Class="me-1 float-end" />
+
+            </div>
+        </div>
+    </div>);
+
+    }
+
+}

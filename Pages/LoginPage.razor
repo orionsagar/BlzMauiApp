@@ -1,0 +1,181 @@
+﻿@page "/"
+@layout LoginLayout
+
+@using BlzMauiApp.Helpers;
+@using BlzMauiApp.Services.Data;
+@using Newtonsoft.Json;
+@using Services.DataService
+@using BlzMauiApp.Models
+
+
+@inject NavigationManager _navigateUrl
+@inject IAlertService AlertService
+@inject CustomAuthStateProvider AuthStateProvider;
+@*@inject ILoginDatabase _logindatabase*@
+@*@inject LoginDatabase logindatabase*@
+
+<!-- Login Wrapper Area -->
+<div class="login-wrapper d-flex align-items-center justify-content-center">
+    <div class="custom-container">
+        <div class="text-center px-4">
+            <img class="login-intro-img" src="image/logicon.png" alt="">
+        </div>
+
+        <div class="text-center px-4">
+            <img class="login-intro-img" src="image/bg-img/36.png" alt="">
+        </div>
+
+        <!-- Register Form -->
+        <div class="register-form mt-4">
+            <h6 class="mb-3 text-center">Log in to continue to the Benvue Int.</h6>
+
+            @*<form action="https://designing-world.com/affan-1.5/page-home.html">*@
+            <EditForm Model="loginView" OnValidSubmit="LoginAttemptValidSubmit" OnInvalidSubmit="LoginAttemptInvalidSubmit">
+                <DataAnnotationsValidator />
+                <hr />
+                <div>
+                    @*<ValidationSummary  />*@
+                </div>
+
+                <div class="form-group">
+                    <input class="form-control" type="text" id="username" @bind="@loginView.Username" placeholder="Username">
+                    <ValidationMessage For="@(() => loginView.Username)" />
+                </div>
+
+                <div class="form-group position-relative">
+                    <input class="form-control" id="psw-input" type="password" @bind="@loginView.Password" placeholder="Enter Password">
+                    <ValidationMessage For="@(() => loginView.Password)" />
+                    <div class="position-absolute" id="password-visibility">
+                        <i class="bi bi-eye"></i>
+                        <i class="bi bi-eye-slash"></i>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100" type="submit">Sign In</button>
+            </EditForm>
+            @*</form>*@
+        </div>
+
+        <!-- Login Meta -->
+        @* <div class="login-meta-data text-center">
+        <a class="stretched-link forgot-password d-block mt-3 mb-1" href="page-forget-password.html">
+        Forgot
+        Password?
+        </a>
+        <p class="mb-0">Didn't have an account? <a class="stretched-link" href="page-register.html">Register Now</a></p>
+        </div>*@
+    </div>
+</div>
+
+
+
+
+@code {
+    string username;
+    string password;
+
+    public LoginViewModel loginView { get; set; } = new LoginViewModel();
+    private List<string> values = new List<string>();
+    public string FormSubmitMessage { get; set; } = "Form Data Not Submitted";
+    UserInfo localLogin = new UserInfo();
+
+    #region Private & Protected
+    private readonly APIDataService _apiServices = new APIDataService();
+    private readonly LoginDatabase loginDatabase = new LoginDatabase();
+    #endregion
+
+    protected override Task OnInitializedAsync()
+    {
+        loginView.Username = "admin";
+        loginView.Password = "arif14717";
+        //Task.Run(() => _logindatabase.InitAsync());
+        return base.OnInitializedAsync();
+    }
+
+
+    private async void LoginAttemptValidSubmit()
+    {
+        LoginViewModel loginData = new LoginViewModel();
+        loginData.Username = loginView.Username;
+        loginData.Password = loginView.Password;
+
+        try
+        {
+            if (loginView.Username != null || loginView.Password != null)
+            {
+                var userinfo = await _apiServices.GetUserInfoAsync(loginData);
+                if (userinfo != null & userinfo.userID != null)
+                {
+                    string userBasicInfoStr = JsonConvert.SerializeObject(userinfo);
+
+                    //var NewWeatherForecast = await _logindatabase.SaveItemAsync(userinfo);
+                    //var ndb = await App.database.SaveItemAsync(userinfo);
+
+                    await loginDatabase.TruncateTableAsync();
+                    var ndb = await loginDatabase.SaveItemAsync(userinfo);
+
+                    await AuthStateProvider.Login(userinfo);
+
+                    //await Microsoft.Maui.Essentials.SecureStorage.SetAsync("accounttoken", token);
+                    await SecureStorage.Default.SetAsync(nameof(loginData), userBasicInfoStr);
+                    await SecureStorage.Default.SetAsync("Name", "hello world");
+
+
+                    _navigateUrl.NavigateTo("/home");
+                }
+
+
+
+
+                // Get
+                //try
+                //{
+                //    using (var httpClient = new HttpClient())
+                //    {
+                //        using (var response = await httpClient.GetAsync(AppConfiguration.BaseApiAddress + "api/User/userinfo?Username=" + loginView.Username + "&Password=" + loginView.Password))
+                //        {
+                //            string apiResponse = await response.Content.ReadAsStringAsync();
+                //            localLogin = JsonConvert.DeserializeObject<UserInfo>(apiResponse);
+                //        }
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Console.WriteLine(ex.Message.ToString());
+                //    //AlertService.Success(ex.Message.ToString(), keepAfterRouteChange: true);
+                //}
+
+
+                //// Post
+                //using (var httpClient = new HttpClient())
+                //{
+                //    StringContent content = new StringContent(JsonConvert.SerializeObject(ReservationData), Encoding.UTF8, "application/json");
+
+                //    using (var response = await httpClient.PostAsync("https://localhost:44324/api/Reservation", content))
+                //    {
+                //        string apiResponse = await response.Content.ReadAsStringAsync();
+                //        ReceivedReservation = JsonConvert.DeserializeObject<Reservation>(apiResponse);
+                //    }
+                //}
+            }
+            else
+            {
+                AlertService.Success("Failed", keepAfterRouteChange: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message.ToString());
+            AlertService.Success(ex.Message.ToString(), keepAfterRouteChange: true);
+        }
+    }
+
+    public void HandleValidSubmit()
+    {
+        //        Context.Add(LocationData);
+        //        Context.SaveChanges();
+        //        FormSubmitMessage = "Form Data Submitted";
+    }
+
+    public void LoginAttemptInvalidSubmit() => FormSubmitMessage = "Invalid Data Submitted";
+}

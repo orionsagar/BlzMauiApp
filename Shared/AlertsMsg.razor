@@ -1,0 +1,152 @@
+﻿
+@implements IDisposable;
+@using BlzMauiApp.Models
+@inject IAlertService AlertService;
+@inject NavigationManager NavigationManager
+
+
+@foreach (var alertcss in alerts)
+{
+    @*<div class="@CssClass(alertcss)">
+        <a class="close" @onclick="@(() => RemoveAlert(alertcss))">&times;</a>
+        <span>@alertcss.Message</span>
+    </div>*@
+
+    @*<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000"
+     data-bs-autohide="false">
+        <div class="toast-header">
+            <i class="bi bi-bootstrap-fill text-primary fz-24"></i>
+            <strong class="me-auto ms-1">Alert Message</strong>
+            <small>Just now</small>
+
+            <button class="btn btn-close position-relative p-1" type="button" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>*@
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="staticBackdropLabel">Alert Message</h6>
+                    <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">@alertcss.Message</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-sm btn-success" type="button">I Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "default-alert";
+
+    [Parameter]
+    public bool Fade { get; set; } = true;
+
+    private List<Alerts> alerts = new List<Alerts>();
+
+    protected override void OnInitialized()
+    {
+        // subscribe to new alerts and location change events
+        AlertService.OnAlert += OnAlert;
+        NavigationManager.LocationChanged += OnLocationChange;
+    }
+
+    public void Dispose()
+    {
+        // unsubscribe from alerts and location change events
+        AlertService.OnAlert -= OnAlert;
+        NavigationManager.LocationChanged -= OnLocationChange;
+    }
+
+    private async void OnAlert(Alerts alert)
+    {
+        // ignore alerts sent to other alert components
+        if (alert.Id != Id)
+            return;
+
+        // clear alerts when an empty alert is received
+        if (alert.Message == null)
+        {
+            // remove alerts without the 'KeepAfterRouteChange' flag set to true
+            alerts.RemoveAll(x => !x.KeepAfterRouteChange);
+
+            // set the 'KeepAfterRouteChange' flag to false for the
+            // remaining alerts so they are removed on the next clear
+            alerts.ForEach(x => x.KeepAfterRouteChange = false);
+        }
+        else
+        {
+            // add alert to array
+            alerts.Add(alert);
+            StateHasChanged();
+
+            // auto close alert if required
+            if (alert.AutoClose)
+            {
+                await Task.Delay(3000);
+                RemoveAlert(alert);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnLocationChange(object sender, LocationChangedEventArgs e)
+    {
+        AlertService.Clear(Id);
+    }
+
+    private async void RemoveAlert(Alerts alert)
+    {
+        // check if already removed to prevent error on auto close
+        if (!alerts.Contains(alert)) return;
+
+        if (Fade)
+        {
+            // fade out alert
+            alert.Fade = true;
+
+            // remove alert after faded out
+            await Task.Delay(250);
+            alerts.Remove(alert);
+        }
+        else
+        {
+            // remove alert
+            alerts.Remove(alert);
+        }
+
+        StateHasChanged();
+    }
+
+    private string CssClass(Models.Alerts alert)
+    {
+        if (alert == null) return null;
+
+        var classes = new List<string> { "alert", "alert-dismissable", "mt-4", "container" };
+
+        var alertTypeClass = new Dictionary<AlertType, string>();
+        alertTypeClass[AlertType.Success] = "alert-success";
+        alertTypeClass[AlertType.Error] = "alert-danger";
+        alertTypeClass[AlertType.Info] = "alert-info";
+        alertTypeClass[AlertType.Warning] = "alert-warning";
+
+        classes.Add(alertTypeClass[alert.Type]);
+
+        if (alert.Fade)
+            classes.Add("fade");
+
+        return string.Join(' ', classes);
+    }
+}

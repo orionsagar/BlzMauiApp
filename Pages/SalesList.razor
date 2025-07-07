@@ -1,0 +1,610 @@
+﻿@page "/saleslist"
+
+@using BlzMauiApp.Services
+@using BlzMauiApp.Services.Data;
+@using BlzMauiApp.Services.DataService
+@using System.Linq.Dynamic.Core
+@using BlzMauiApp.Helpers;
+@using System.Globalization;
+@using System.Collections.ObjectModel
+@using Microsoft.JSInterop;
+@inject IJSRuntime JS
+@*@using RadzenBlazorDemos.Data
+@using RadzenBlazorDemos.Models.Northwind
+@using Microsoft.EntityFrameworkCore*@
+
+
+
+
+
+<InnerHeader Title="Invoice List" BackUrl="/home" hasBackUrl="false" />
+
+<div class="page-content-wrapper py-3">
+    <!-- Element Heading -->
+    @*<div class="container">
+    <div class="element-heading">
+    <h6>All input field</h6>
+    </div>
+    </div>*@
+
+    @* <RadzenDataGrid Data="@orderDetails" Count="@count" LoadData="@LoadData" TItem="Products" AllowVirtualization="true" Style="height:400px"
+    AllowFiltering="false" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" LogicalFilterOperator="LogicalFilterOperator.Or"
+    AllowSorting="false">
+    <Columns>
+    <RadzenDataGridColumn TItem="Products" Property="ProductID" Title="ProductID" />
+    <RadzenDataGridColumn TItem="Products" Property="ProductName" Title="ProductName" />
+    <RadzenDataGridColumn TItem="Products" Property="PurchasePrice" Title="PurchasePrice">
+    <Template Context="detail">
+    @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", detail.SalePrice)
+    </Template>
+    </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="Products" Property="Status" Title="Status" />
+    </Columns>
+    </RadzenDataGrid>*@
+
+
+    <!-- Top Products-->
+    <div class="top-products-area product-list-wrap">
+        <div class="container">
+            <div class="row g-3">
+
+                @{
+                    if (spinner == true)
+                    {
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    }
+
+                    if (invoiceList != null)
+                    {
+                        foreach (var item in invoiceList.items)
+                        {
+                            <div class="col-12">
+                                <div class="card single-product-card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            @*<div class="card-side-img">
+                                <a class="product-thumbnail d-block" href="#">
+                                <img src="/image/bg-img/p1.jpg" alt="">
+                                <!-- Badge -->
+                                <span class="badge bg-primary">Sale</span>
+                                </a>
+                                </div>*@
+
+                                            <div class="card-content ">
+                                                <div style="width:80%;" class="float-start">
+                                                    <!-- Product Thumbnail -->
+                                                    <a class="product-title d-block text-truncate mt-0" href="/salesdetails/@item.InvID/@PageNumber/@PageSize">Inv No: @item.InvNo</a>
+                                                    @{
+                                                        DateTime d = Convert.ToDateTime(item.Saledate);
+                                                        var nd = d.Day + "-" + (d.Month.ToString().Length == 1 ? "0" + d.Month.ToString() : d.Month.ToString()) + "-" + d.Year;
+                                                    }
+                                                    <a class="product-title d-block text-truncate mt-0" href="/salesdetails/@item.InvID/@PageNumber/@PageSize">Date: @nd</a>
+                                                    <!-- Product Title -->
+                                                    <a class="product-title d-block text-truncate mt-0" href="/salesdetails/@item.InvID/@PageNumber/@PageSize">Cus Name: @item.CustomerName</a>
+                                                </div>
+                                                <div style="width:20%;" class="float-end">
+                                                    <a class="btn m-1 btn-sm btn-warning" href="javascript:;"><i class="bi bi-pencil-square"></i></a>
+                                                    <a class="btn btn-sm btn-primary me-2" href="javascript:;"><i class="bi bi-file-earmark-pdf"></i>Print Pos</a>
+                                                </div>
+                                                <!-- Product Title -->
+                                                @*<a class="product-title d-block text-truncate mt-0" href="#">Qty: </a>*@
+                                                <!-- Product Price -->
+                                                @*<p class="sale-price">Sub Total:  <span>Tk @item.MrpPrice</span></p>*@
+                                                @*<p class="sale-price">Dis:  <span>Tk @item.MrpPrice</span></p>*@
+                                                @*<p class="sale-price">Charge:  <span>Tk @item.MrpPrice</span></p>*@
+                                                @*<p class="sale-price">Total:  <span>Tk @item.MrpPrice</span></p>*@
+
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Qty</th>
+                                                            <th scope="col">Sub Total</th>
+                                                            <th scope="col">Dis</th>
+                                                            <th scope="col">Charge</th>
+                                                            <th scope="col">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">@item.TotalQty</th>
+                                                            <th scope="row">@item.SubTotal</th>
+                                                            <td>@item.DiscAmnt</td>
+                                                            <td>@item.DelvCharge</td>
+                                                            <td>@item.NetAmnt</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <!-- Add To Cart Button -->
+                                                @*<a class="btn btn-danger btn-sm disabled" href="#">
+                                    <i class="bi bi-cart-x me-1"></i>Out of Stock
+                                    </a>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    }
+                }
+
+                <div style="height: 60px;"></div>
+                <div class="footer">
+
+                    @*<button class="btn btn-primary btn-back-to-top" @onclick="@LoadPrevInvoice" ><i class="bi bi-arrow-left"></i> Prev. Page</button>
+                    <button class="btn btn-primary float-end btn-back-to-top" @onclick="@LoadNextInvoice"><i class="bi bi-arrow-right"></i> Next Page</button>*@
+
+                    <RadzenButton id="btnPrev" Click=@(args => LoadPrevInvoice()) Disabled="@btnPrevDisable" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" class="btn-back-to-top backtotop"><i class="bi bi-arrow-left"></i> Prev. Page</RadzenButton>
+                    <RadzenButton id="btnNext" Click=@(args => LoadNextInvoice()) Disabled="@btnNextDisable" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" class="float-end btn-back-to-top backtotop"><i class="bi bi-arrow-right"></i> Next Page</RadzenButton>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@*affanOffcanvas
+//affanOffcanvsLabel*@
+<!-- Offcanvas Start -->
+<div class="offcanvas offcanvas-start" id="filterOffcanvas" data-bs-scroll="true" tabindex="-1"
+     aria-labelledby="filterOffcanvsLabel">
+
+    <button class="btn-close btn-close-black text-reset" type="button" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+
+    <div class="offcanvas-body p-0">
+        <div class="sidenav-wrapper">
+            <!-- Sidenav Profile -->
+            @*<div class="sidenav-profile">
+            <div class="sidenav-style1"></div>
+            <!-- User Thumbnail -->
+            <div class="user-profile">
+            <img src="image/bg-img/2.jpg" alt="">
+            </div>
+            <!-- User Info -->
+            </div>*@
+            <div class="container">
+                <div class="user-info">
+                    <h5 class="user-name mb-0 mt-1">Filter</h5>
+                </div>
+
+                <!-- Sidenav Nav -->
+                <ul class="sidenav-nav ps-0">
+                    <li>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <RadzenDropDown AllowClear="true"
+                                            TValue="string"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowFiltering="true"
+                                            Class="w-100"
+                                            Placeholder="Select Branch"
+                                            Data=@BranchList
+                                            TextProperty="Text"
+                                            ValueProperty="Value"
+                                            Change=@(args => OnChangeBranch(args, "DropDown with placeholder")) />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>Zone</label>
+                            <RadzenDropDown AllowClear="true"
+                                            TValue="string"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowFiltering="true"
+                                            Class="w-100"
+                                            Placeholder="Select Zone"
+                                            Data=@ZoneList
+                                            TextProperty="Text"
+                                            ValueProperty="Value"
+                                            Change=@(args => OnChangeZone(args, "DropDown with placeholder")) />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>Area</label>
+                            <RadzenDropDown AllowClear="true"
+                                            TValue="string"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowFiltering="true"
+                                            Class="w-100"
+                                            Placeholder="Select Area"
+                                            Data=@AreaList
+                                            TextProperty="Text"
+                                            ValueProperty="Value"
+                                            Change=@(args => OnChangeArea(args, "DropDown with placeholder")) />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>Representative</label>
+                            <RadzenDropDown AllowClear="true"
+                                            TValue="string"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowFiltering="true"
+                                            Class="w-100"
+                                            Placeholder="Select Representative"
+                                            Data=@RepresentativeList
+                                            TextProperty="Text"
+                                            ValueProperty="Value" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>Customer</label>
+                            <RadzenDropDown AllowClear="true"
+                                            TValue="string"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                            AllowFiltering="true"
+                                            Class="w-100"
+                                            Placeholder="Select Customer"
+                                            Data=@CustomerList
+                                            TextProperty="Text"
+                                            ValueProperty="Value" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>From</label>
+                            <RadzenDatePicker @bind-Value=@value DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) Class="w-100" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label>To</label>
+                            <RadzenDatePicker @bind-Value=@value DateFormat="d" Change=@(args => OnChange(args, "DatePicker", "MM/dd/yyyy")) Class="w-100" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="container">
+                <div style="border-top: 1px solid #ebebeb;"></div>
+                <button class="btn btn-sm btn-secondary justify-content-center float-start" type="button">
+                    Reset
+                </button>
+                <button class="btn btn-sm btn-primary justify-content-center float-end" type="button">
+                    Apply
+                </button>
+            </div>
+
+
+            <!-- Social Info -->
+            <div class="social-info-wrap">
+
+                @*<a href="#">
+                //    <i class="bi bi-facebook"></i>
+                //</a>
+                //<a href="#">
+                //    <i class="bi bi-twitter"></i>
+                //</a>
+                //<a href="#">
+                //    <i class="bi bi-linkedin"></i>
+                //</a>*@
+            </div>
+
+            <!-- Copyright Info -->
+            @*<div class="copyright-info">
+            <p>
+            <span id="copyrightYear"></span>
+            &copy; Made by <a href="#">Designing World</a>
+            </p>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+@code {
+    //public IEnumerable<string> items = Enumerable.Range(0, 333000).Select(i => i.ToString()).ToArray();
+
+    //urihelper.NavigateTo(url + "/" + Username);
+
+    int count;
+    public IEnumerable<Products> orderDetails;
+
+    #region API
+    private readonly APIDataService _apiServices = new APIDataService();
+    private readonly LoginDatabase loginDatabase = new LoginDatabase();
+    #endregion
+
+    public List<Products> productsList;
+    public SalesInvoiceList invoiceList;
+
+    public int PageNumber { get; set; } = 1;
+    public decimal PageSize { get; set; } = 20;
+    public decimal TotalCount { get; set; }
+    public int CurrentPage { get; set; }
+    public string PreviousPage { get; set; }
+    public string NextPage { get; set; }
+    public int TotalPage { get; set; }
+
+    public bool btnPrevDisable { get; set; } = false;
+    public bool btnNextDisable { get; set; } = false;
+
+    public bool spinner { get; set; }
+
+    string BranchID { get; set; } = "2";
+    string AreaID { get; set; }
+    string RepresentativeID { get; set; }
+    string CompID { get; set; }
+
+
+    #region IEumList
+    public IEnumerable<SelectListItem> BranchList { get; set; }
+    public IEnumerable<SelectListItem> ZoneList { get; set; }
+    public IEnumerable<SelectListItem> AreaList { get; set; }
+    public IEnumerable<SelectListItem> RepresentativeList { get; set; }
+    public IEnumerable<SelectListItem> CustomerList { get; set; }
+    #endregion
+
+    DateTime? value = DateTime.Now;
+
+    void OnChange(DateTime? value, string name, string format)
+    {
+        //console.Log($"{name} value changed to {value?.ToString(format)}");
+    }
+
+    async void LoadData(LoadDataArgs args)
+    {
+        //console.Log($"Skip: {args.Skip}, Top: {args.Top}");
+
+        var query = await _apiServices.GetAllProduct();
+
+        //if (!string.IsNullOrEmpty(args.Filter))
+        //{
+        //    query = query.Where(args.Filter);
+        //}
+
+        //if (!string.IsNullOrEmpty(args.OrderBy))
+        //{
+        //    query = query.OrderBy(args.OrderBy);
+        //}
+        orderDetails = query.AsEnumerable();
+
+        orderDetails = query.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
+
+        count = orderDetails.Count();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        //productsList = Task.Run(async () => await _apiServices.GetAllProduct()).Result;
+        LoadInvoice();
+
+        var userFeeds = Task.Run(async () => await loginDatabase.GetItemsAsync()).Result;
+
+        if (userFeeds.Count > 0)
+        {
+            foreach (var uf in userFeeds)
+            {
+                BranchID = uf.bid;
+                AreaID = string.IsNullOrEmpty(uf.aid) == false ? uf.aid : "0";
+                RepresentativeID = uf.rid;
+                CompID = uf.compID;
+            }
+
+            GetBranch();
+        }
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected void LoadInvoice()
+    {
+        spinner = true;
+        Task.Delay(1);
+<<<<<<< HEAD
+        invoiceList = Task.Run(async () => await _apiServices.GetAllInvoice("", PageNumber, (int)PageSize)).Result;
+=======
+        invoiceList = Task.Run(async () => awaitw _apiServices.GetAllInvoice("", PageNumber, (int)PageSize)).Result;
+>>>>>>> 4dae52fb4ef56bfbfd21989ad1671a2938c575ac
+        TotalCount = invoiceList.TotalCount;
+        CurrentPage = invoiceList.currentPage;
+        PreviousPage = invoiceList.previousPage;
+        NextPage = invoiceList.nextPage;
+        decimal d = (TotalCount / PageSize);
+        TotalPage = (int)Math.Ceiling(d);
+
+        Task.Delay(1);
+        spinner = false;
+    }
+
+    protected void LoadPrevInvoice()
+    {
+        if (PreviousPage == "Yes")
+        {
+            if (CurrentPage > 1)
+            {
+                PageNumber = CurrentPage - 1;
+            }
+            else
+            {
+                PageNumber = CurrentPage;
+            }
+
+            spinner = true;
+            Task.Delay(1);
+
+            invoiceList = Task.Run(async () => await _apiServices.GetAllInvoice("", PageNumber, (int)PageSize)).Result;
+            CurrentPage = invoiceList.currentPage;
+            PreviousPage = invoiceList.previousPage;
+            NextPage = invoiceList.nextPage;
+
+            Task.Delay(1);
+            spinner = false;
+
+            if (NextPage == "Yes")
+                btnNextDisable = false;
+            else
+                btnNextDisable = true;
+        }
+        else
+        {
+            btnPrevDisable = true;
+
+            if (NextPage == "Yes")
+                btnNextDisable = false;
+            else
+                btnNextDisable = true;
+        }
+
+        JS.InvokeVoidAsync("backToTop");
+    }
+
+    protected void LoadNextInvoice()
+    {
+        if (NextPage == "Yes")
+        {
+            if (CurrentPage >= 1)
+            {
+                if (TotalPage == CurrentPage)
+                {
+                    PageNumber = CurrentPage;
+                }
+                else
+                {
+                    CurrentPage += 1;
+                    PageNumber += 1;
+                }
+            }
+            else
+            {
+                PageNumber = CurrentPage;
+            }
+
+            spinner = true;
+            Task.Delay(1);
+
+            invoiceList = Task.Run(async () => await _apiServices.GetAllInvoice("", PageNumber, (int)PageSize)).Result;
+            CurrentPage = invoiceList.currentPage;
+            PreviousPage = invoiceList.previousPage;
+            NextPage = invoiceList.nextPage;
+
+            Task.Delay(1);
+            spinner = false;
+
+
+            if (PreviousPage == "Yes")
+                btnPrevDisable = false;
+            else
+                btnPrevDisable = true;
+
+
+        }
+        else
+        {
+            btnNextDisable = true;
+
+            if (PreviousPage == "Yes")
+                btnPrevDisable = false;
+            else
+                btnPrevDisable = true;
+        }
+
+        JS.InvokeVoidAsync("backToTop");
+    }
+
+    public void GetBranch()
+    {
+        if (BranchID != null)
+        {
+            var allBranch = Task.Run(async () => await _apiServices.GetBranchs(BranchID)).Result;
+            if (allBranch != null)
+            {
+                BranchList = allBranch.ToList();
+            }
+        }
+    }
+
+    void OnChangeBranch(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+        //txtInvoiceNo.DefaultIfEmpty();
+        if (value is not null)
+        {
+            BranchID = value.ToString();
+            GetZone(BranchID);
+        }
+    }
+
+    public void GetZone(string BranchID)
+    {
+        if (BranchID != null)
+        {
+            var allZone = Task.Run(async () => await _apiServices.GetZone(BranchID)).Result;
+            if (allZone != null)
+            {
+                ZoneList = allZone.ToList();
+            }
+        }
+    }
+
+    void OnChangeZone(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+        //txtInvoiceNo.DefaultIfEmpty();
+        if (value is not null)
+        {
+            GetArea(value.ToString());
+        }
+    }
+
+    public void GetArea(string ZoneID)
+    {
+        if (ZoneID != null)
+        {
+            var allArea = Task.Run(async () => await _apiServices.GetArea(ZoneID)).Result;
+            if (allArea != null)
+            {
+                AreaList = allArea.ToList();
+            }
+        }
+    }
+
+    void OnChangeArea(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+        //txtInvoiceNo.DefaultIfEmpty();
+        if (value is not null)
+        {
+            GetRepresentative(value.ToString(), BranchID);
+            GetCustomer(value.ToString(), BranchID);
+        }
+    }
+
+    public void GetRepresentative(string AreaID, string BranchID)
+    {
+        if (AreaID != null)
+        {
+            var allRepre = Task.Run(async () => await _apiServices.GetRepresentative(AreaID, BranchID)).Result;
+            if (allRepre != null)
+            {
+                RepresentativeList = allRepre.ToList();
+            }
+        }
+    }
+
+    public void GetCustomer(string AreaID, string BranchID)
+    {
+        if (AreaID != null)
+        {
+            var allCus = Task.Run(async () => await _apiServices.GetCustomer(AreaID, BranchID)).Result;
+            if (allCus != null)
+            {
+                CustomerList = allCus.ToList();
+            }
+        }
+    }
+}

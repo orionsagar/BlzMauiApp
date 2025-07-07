@@ -1,0 +1,80 @@
+﻿  <!-- RTL mode switching -->
+<div class="rtl-mode-switching">
+    <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+        <div class="rtl-mode-text text-center">
+            <i class="bi bi-text-right"></i>
+            <p class="mb-0">Switching to RTL mode</p>
+        </div>
+        <div class="ltr-mode-text text-center">
+            <i class="bi bi-text-left"></i>
+            <p class="mb-0">Switching to default mode</p>
+        </div>
+    </div>
+</div>
+
+<!-- Header Area-->
+<div class="header-area" id="headerArea">
+    <div class="container">
+        <!-- Header Content-->
+        <div class="header-content header-style-four position-relative d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            @{
+                if (hasBackUrl == true)
+                {
+                    <div class="back-button">
+                        <a href="@BackUrl">
+                            <i class="bi bi-arrow-left-short"></i>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="back-button">
+                        <div class="navbar--toggler" id="filterNavbarToggler" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas"
+                         aria-controls="filterOffcanvas">
+                            <i class="bi bi-filter-square-fill"></i>
+                        </div>
+                    </div>
+
+                }
+            }
+@*            <div class="back-button">
+                <a href="@BackUrl">
+                    <i class="bi bi-arrow-left-short"></i>
+                </a>
+            </div>*@
+
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">@Title</h6>
+            </div>
+
+            @*<!-- User Profile-->
+            <div class="user-profile-wrapper">
+            <a class="user-profile-trigger-btn" href="#">
+            <img src="image/bg-img/20.jpg" alt="">
+            </a>
+            </div>*@
+
+            <!-- Navbar Toggler -->
+            <div class="navbar--toggler" id="affanNavbarToggler" data-bs-toggle="offcanvas" data-bs-target="#affanOffcanvas"
+                 aria-controls="affanOffcanvas">
+                <span class="d-block"></span>
+                <span class="d-block"></span>
+                <span class="d-block"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string BackUrl { get; set; }
+
+    [Parameter]
+    public bool hasBackUrl { get; set; } = true;
+}

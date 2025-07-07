@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Benvue int" />
+    <meta name="keywords" content="Benvue int" />
+    <meta name="author" content="Benvue int" />
+    <link rel="manifest" href="manifest.json" />
+    <title>BlzMauiApp</title>
+    <base href="/" />
+    <!--<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />-->
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="BlzMauiApp.styles.css" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="image/core-img/favicon.ico">
+    <link rel="apple-touch-icon" href="image/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="image/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="image/icons/icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="image/icons/icon-180x180.png">
+
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/BasicLine.css">
+
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <!--<link rel="stylesheet" href="_content/Radzen.Blazor/css/standard-base.css">-->
+
+    <link href ="_content/MatBlazor/dist/matBlazor.css"  rel="stylesheet"   />
+</head>
+
+<body>
+
+    <div class="status-bar-safe-area"></div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Internet Connection Status -->
+    <div class="internet-connection-status" id="internetStatus"></div>
+
+    <!-- Dark mode switching -->
+    <div class="dark-mode-switching">
+        <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+            <div class="dark-mode-text text-center">
+                <i class="bi bi-moon"></i>
+                <p class="mb-0">Switching to dark mode</p>
+            </div>
+            <div class="light-mode-text text-center">
+                <i class="bi bi-brightness-high"></i>
+                <p class="mb-0">Switching to light mode</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+
+    <!--<script src="_content/Blazorise.Charts/charts.js?v=1.1.4.1" type="module"></script>-->
+    <!-- ============== Js Files ==============  -->
+    <!-- All JavaScript Files -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/slideToggle.min.js"></script>
+    <script src="js/internet-status.js"></script>
+    <script src="js/tiny-slider.js"></script>
+    <script src="js/baguetteBox.min.js"></script>
+    <script src="js/countdown.js"></script>
+    <script src="js/rangeslider.min.js"></script>
+    <script src="js/vanilla-dataTables.min.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/imagesloaded.pkgd.min.js"></script>
+    <script src="js/isotope.pkgd.min.js"></script>
+    <script src="js/dark-rtl.js"></script>
+    <script src="js/active.js"></script>
+    <script src="js/pwa.js"></script>
+
+    <!--<script src="js/ForModal.js"></script>-->
+
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+    <script src="_content/MatBlazor/dist/matBlazor.js"></script>
+    <script src="js/dev.js"></script>
+
+        <!--<script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="js/CustomJS.js"></script>-->
+</body>
+
+</html>

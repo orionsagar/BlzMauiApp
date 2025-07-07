@@ -1,0 +1,390 @@
+﻿  @page "/elements"
+  @inject NavigationManager NavManager;
+  @{
+    string Url = NavManager.Uri.ToString();
+  }
+<InnerHeader Title="Elements" BackUrl="/" />
+
+<div class="page-content-wrapper py-3" id="elementsSearchList">
+    <div class="container">
+        <!-- Search Form -->
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="form-group mb-0">
+                    <input class="form-control" id="elementsSearchInput" type="text" onkeyup="elementsSearch()"
+                           placeholder="Search element...">
+                </div>
+            </div>
+        </div>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-list"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Navigation</h6>
+                    <span>Modern header, footer, and sidebar nav.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-header-menu.html">
+            Header Variations
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-footer-menu.html">
+            Footer Variations
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-sidebar-left-menu.html">
+            Left Sidebar Nav
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-sidebar-right-menu.html">
+            Right Sidebar Nav
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-bell-fill"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Notifications</h6>
+                    <span>Display alerts &amp; notifications creatively.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-alerts.html">
+            Alerts
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-toasts.html">
+            Toasts
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-online-offline-detection.html">
+            Online / Offline Detection
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-ui-checks"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Form Layouts</h6>
+                    <span>All form input components.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-form-input.html">
+            Input
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-textarea.html">
+            Textarea
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-select.html">
+            Select
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-input-group.html">
+            Input Group
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-check.html">
+            Checkbox
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-radio.html">
+            Radio
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-file-upload.html">
+            File Upload
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-range.html">
+            Range
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-auto-complete.html">
+            Auto Complete
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-switches.html">
+            Switches
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-form-validation.html">
+            Form Validation
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-columns-gap"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">UI Elements</h6>
+                    <span>Beautifully designed lots of UI elements.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-accordion.html">
+            Accordion
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-badge.html">
+            Badge
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-button.html">
+            Button
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-breadcrumb.html">
+            Breadcrumb
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-timeline.html">
+            Timeline
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-card.html">
+            Card
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-image-gallery.html">
+            Image Gallery
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-hero-blocks.html">
+            Hero Blocks
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-tab.html">
+            Tab
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-offcanvas.html">
+            Offcanvas
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-user-ratings.html">
+            User Ratings
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-testimonial.html">
+            Testimonials
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-call-to-action.html">
+            Call to Action
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-partner-logo.html">
+            Partner Logo
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-tools"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Helpers</h6>
+                    <span>Quickly create any blocks with helpers.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-borders.html">
+            Borders
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-colors.html">
+            Colors
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-dividers.html">
+            Dividers
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-embed-video.html">
+            Embeds Video
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-images.html">
+            Images
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-list-group.html">
+            List Group
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-modal.html">
+            Modal
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-pagination.html">
+            Pagination
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-progress-bar.html">
+            Progress Bar
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-scrollspy.html">
+            Scrollspy
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-spinners.html">
+            Spinners
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-stretched-link.html">
+            Stretched link
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-shadows.html">
+            Shadows
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-sizing.html">
+            Sizing
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-tooltips.html">
+            Tooltips
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-text-truncation.html">
+            Text truncation
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-typography.html">
+            Typography
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-text.html">
+            Text
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-sliders"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Carousels</h6>
+                    <span>Create a variety of carousels.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-bootstrap-carousel.html">
+            Bootstrap Carousel
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-tiny-slider.html">
+            Tiny Slider
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-table"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Tables</h6>
+                    <span>Make responsive table layouts.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-basic-table.html">
+            Basic Table
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-data-table.html">
+            Data Table
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-price-table.html">
+            Price Table
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-comparison-table.html">
+            Comparison Table
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-clock-history"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Timer</h6>
+                    <span>Countdown or countup your milestones.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-countdown.html">
+            Count Down
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-counterup.html">
+            Counter Up
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        <div class="affan-element-item">
+            <div class="element-heading-wrapper">
+                <i class="bi bi-bar-chart"></i>
+                <div class="heading-text">
+                    <h6 class="mb-1">Charts</h6>
+                    <span>Lots of charts for showing data.</span>
+                </div>
+            </div>
+        </div>
+
+        <a class="affan-element-item" href="element-area-charts.html">
+            Area Chart
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-column-charts.html">
+            Column Chart
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item" href="element-line-charts.html">
+            Line Chart
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+        <a class="affan-element-item mb-0" href="element-pie-charts.html">
+            Pie Chart
+            <i class="bi bi-caret-right-fill fz-12"></i>
+        </a>
+
+        @*<script>
+        function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('affan-element-item');
+
+        for (i = 0; i < listItem.length; i++) {
+        var a = listItem[i];
+        var textValue = a.textContent || a.innerText;
+        if (textValue.toUpperCase().indexOf(filter) > -1) {
+        listItem[i].style.display = "";
+        } else {
+        listItem[i].style.display = "none";
+        }
+        }
+        }
+        </script>*@
+    </div>
+</div>
+
+@code {
+   
+}
